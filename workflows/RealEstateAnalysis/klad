@@ -1,0 +1,97 @@
+        # gov_spending = self.gov_spending
+        # # create_plots_runner.run(gov_spending, 'gov_spending')
+        #
+        # gov_taxes = self.gov_taxes
+        # # create_plots_runner.run(gov_taxes, 'gov_taxes')
+        #
+        # private_savings = self.private_savings         # in millions
+        # # create_plots_runner.run(private_savings, 'private_savings')
+        #
+        # private_investment = self.private_investment           # in millions
+        # # create_plots_runner.run(private_investment, 'private_investment')
+        #
+        # imports = self.imports    # in millions
+        # # create_plots_runner.run(imports, 'imports')
+        #
+        # exports = self.exports    # in millions
+        # # create_plots_runner.run(exports, 'exports')
+        #
+        # min_dates = max([self.gov_spending['DATE'].min(), self.gov_taxes['DATE'].min(), self.private_savings['DATE'].min(),
+        #  self.private_investment['DATE'].min(), self.imports['DATE'].min(), self.exports['DATE'].min()])
+        #
+        # gov_spending = gov_spending[gov_spending['DATE'] >= min_dates]
+        # gov_taxes = gov_taxes[gov_taxes['DATE'] >= min_dates]
+        # private_investment = private_investment[private_investment['DATE'] >= min_dates]
+        # private_savings = private_savings[private_savings['DATE'] >= min_dates]
+        # imports = imports[imports['DATE'] >= min_dates]
+        # exports = exports[exports['DATE'] >= min_dates]
+        #
+        # gov_spending = gov_spending.iloc[:, 1].reset_index(drop=True)
+        # gov_taxes = gov_taxes.iloc[:, 1].reset_index(drop=True)
+        #
+        # private_savings = private_savings.iloc[:, 1].reset_index(drop=True)
+        # private_investment = private_investment.iloc[:, 1].reset_index(drop=True)
+        #
+        # imports = imports.iloc[:, 1].reset_index(drop=True)
+        # exports = exports.iloc[:, 1].reset_index(drop=True)
+        #
+        # gov_deficit = gov_spending - gov_taxes
+        # net_savings = private_savings - private_investment
+        # net_exports = imports - exports
+        #
+        # net_savings_2 = self.net_savings
+        # netexp_annual = self.netexp_annual
+        # b=3
+        #
+
+
+
+
+       #    ['UNRATE', 'FPCPITOTLZGUSA', 'GDP', 'SAVINGS', 'GFDEBTN', 'WM2NS', 'WM1NS', 'NETEXP', 'IEABC',
+        #              'NETFI', 'GOVS', 'GOVT', 'GPSAVE', 'GPDI', 'IMPGS', 'EXPGS', 'net_savings', 'deficit',
+        #              'NETEXP_annual']
+        # self.fpcpitotlzgusa = pd.read_csv(self.folder_path + self.files[1] + '.csv')
+        # self.unrate = pd.read_csv(self.folder_path + self.files[0] + '.csv')
+        # self.gbp = pd.read_csv(self.folder_path + self.files[2] + '.csv')
+        # self.savings = pd.read_csv(self.folder_path + self.files[3] + '.csv')
+        # self.gfdebtn = pd.read_csv(self.folder_path + self.files[4] + '.csv')
+        # self.wm2ns = pd.read_csv(self.folder_path + self.files[5] + '.csv')
+        # self.wm1ns = pd.read_csv(self.folder_path + self.files[6] + '.csv')
+        # self.netexp = pd.read_csv(self.folder_path + self.files[7] + '.csv')
+        # self.ieabc = pd.read_csv(self.folder_path + self.files[8] + '.csv')
+        # self.netfi = pd.read_csv(self.folder_path + self.files[9] + '.csv')
+        #
+        # self.gov_spending = pd.read_csv(self.folder_path + self.files[10] + '.csv')
+        # self.gov_taxes = pd.read_csv(self.folder_path + self.files[11] + '.csv')
+        # self.private_savings = pd.read_csv(self.folder_path + self.files[12] + '.csv')
+        # self.private_investment = pd.read_csv(self.folder_path + self.files[13] + '.csv')
+        # self.imports = pd.read_csv(self.folder_path + self.files[14] + '.csv')
+        # self.exports = pd.read_csv(self.folder_path + self.files[15] + '.csv')
+        #
+        # self.net_savings = pd.read_csv(self.folder_path + self.files[16] + '.csv')
+        # self.deficit = pd.read_csv(self.folder_path + self.files[17] + '.csv')
+        # self.netexp_annual = pd.read_csv(self.folder_path + self.files[18] + '.csv')
+        #
+        # self.unrate.DATE = pd.to_datetime(self.unrate.DATE, format='%Y-%m-%d')
+        # self.fpcpitotlzgusa.DATE = pd.to_datetime(self.savings.DATE, format='%Y-%m-%d')
+        # self.gbp.DATE = pd.to_datetime(self.wm1ns.DATE, format='%Y-%m-%d')
+        # self.savings.DATE = pd.to_datetime(self.wm2ns.DATE, format='%Y-%m-%d')
+        # self.gfdebtn.DATE = pd.to_datetime(self.wm2ns.DATE, format='%Y-%m-%d')
+        # self.wm2ns.DATE = pd.to_datetime(self.wm2ns.DATE, format='%Y-%m-%d')
+        # self.wm1ns.DATE = pd.to_datetime(self.wm2ns.DATE, format='%Y-%m-%d')
+        # self.gbp.DATE = pd.to_datetime(self.wm2ns.DATE, format='%Y-%m-%d')
+        # self.netexp.DATE = pd.to_datetime(self.netexp.DATE, format='%Y-%m-%d')
+        # self.ieabc.DATE = pd.to_datetime(self.ieabc.DATE, format='%Y-%m-%d')
+        # self.netfi.DATE = pd.to_datetime(self.netfi.DATE, format='%Y-%m-%d')
+        #
+        # self.gov_spending.DATE = pd.to_datetime(self.gov_spending.DATE, format='%Y-%m-%d')
+        # self.gov_taxes.DATE = pd.to_datetime(self.gov_taxes.DATE, format='%Y-%m-%d')
+        # self.private_savings.DATE = pd.to_datetime(self.private_savings.DATE, format='%Y-%m-%d')
+        # self.private_investment.DATE = pd.to_datetime(self.private_investment.DATE, format='%Y-%m-%d')
+        # self.imports.DATE = pd.to_datetime(self.imports.DATE, format='%Y-%m-%d')
+        # self.exports.DATE = pd.to_datetime(self.exports.DATE, format='%Y-%m-%d')
+        #
+        # self.net_savings.DATE = pd.to_datetime(self.net_savings.DATE, format='%Y-%m-%d')
+        # self.deficit.DATE = pd.to_datetime(self.deficit.DATE, format='%Y-%m-%d')
+        # self.netexp_annual.DATE = pd.to_datetime(self.netexp_annual.DATE, format='%Y-%m-%d')
+
