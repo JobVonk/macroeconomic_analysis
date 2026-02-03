@@ -1,6 +1,7 @@
-from tests.UnitTests import UnitTests
+from tests.tests_unit import TestsUnit
 import logging
 import sys
+
 
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
@@ -10,9 +11,8 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 root.addHandler(handler)
 
-
 def main_tests():
-    unit_tests = UnitTests()
+    unit_tests = TestsUnit()
     unit_tests.run()
 
 if __name__ == "__main__":
