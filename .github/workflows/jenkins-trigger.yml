@@ -19,6 +19,12 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
 
-    - name: Run tests
-      shell: pwsh  # Use PowerShell for Windows
-      run: python -m main_tests
+    - name: Run tests with coverage
+      run: |
+        pip install pytest pytest-cov
+        pytest --cov=my_package --cov-report=xml --cov-report=term tests/main_tests
+        
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
