@@ -98,7 +98,7 @@ class TestsUnit:
     def tests_unit_data_container(self):
         data_container = DataContainer(self.config)
 
-        self.find_frequency_unit_test(data_container)
+        self.test_unit_find_frequency(data_container)
 
         self.test_unit_lag(data_container)
         self.test_unit_minus(data_container)
