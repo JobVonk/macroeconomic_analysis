@@ -1,4 +1,4 @@
-from tests.tests_unit import TestsUnit
+from tests_unit import TestsUnit
 import logging
 import sys
 
