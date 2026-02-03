@@ -57,9 +57,9 @@ class TestsUnit:
         df_dict = {'DF': df, 'LAG_DF': lag_df}
 
         regressor = Regressor(df_dict, 'DF', ['LAG_DF'])
-        self.concat_dfs_unit_test(regressor)
-        self.compute_ols_unit_test(regressor)
-        self.compute_granger_causality_unit_test(regressor)
+        self.test_unit_concat_dfs(regressor)
+        self.test_unit_compute_ols(regressor)
+        self.test_unit_compute_granger_causality(regressor)
 
     @staticmethod
     def test_unit_concat_dfs(regressor: Regressor):
