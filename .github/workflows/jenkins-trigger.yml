@@ -16,6 +16,9 @@ jobs:
         Get-Date
         Write-Host "Current directory:" (Get-Location)
     
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
     - name: Run tests
       shell: pwsh  # Use PowerShell for Windows
       run: python -m main_tests.py
