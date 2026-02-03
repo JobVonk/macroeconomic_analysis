@@ -33,3 +33,7 @@ Thumbs.db
 # token
 *.git-token
 *git-token
+
+# key
+*key*
+*key.pub*
