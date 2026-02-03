@@ -5,4 +5,5 @@ def main():
     project_runner = ProjectRunner('create_plots')
     project_runner.run()
 
-main()
+if __name__ == "__main__":
+    main()

@@ -15,4 +15,5 @@ def main_tests():
     unit_tests = UnitTests()
     unit_tests.run()
 
-main_tests()
+if __name__ == "__main__":
+    main_tests()    
