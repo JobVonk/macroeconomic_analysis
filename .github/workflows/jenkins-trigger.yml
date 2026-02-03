@@ -1,0 +1,29 @@
+name: Windows CI
+on: [push]
+
+jobs:
+  test:
+    runs-on: windows-latest  # 👈 This is the key change!
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup
+      run: |
+        echo "Running on Windows!"
+        # Windows commands use cmd/powershell syntax
+        Get-Date
+        Write-Host "Current directory:" (Get-Location)
+    
+    - name: Run tests
+      run: |
+        # Your Windows-specific test commands
+        # Example for .NET:
+        # dotnet test
+        
+        # Example for Node.js on Windows:
+        # npm test
+        
+        # Example for Python on Windows:
+        # python -m pytest
