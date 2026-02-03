@@ -17,13 +17,5 @@ jobs:
         Write-Host "Current directory:" (Get-Location)
     
     - name: Run tests
-      run: |
-        # Your Windows-specific test commands
-        # Example for .NET:
-        # dotnet test
-        
-        # Example for Node.js on Windows:
-        # npm test
-        
-        # Example for Python on Windows:
-        # python -m pytest
+      shell: pwsh  # Use PowerShell for Windows
+      run: python -m main_tests.py
