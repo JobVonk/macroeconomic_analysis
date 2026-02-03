@@ -21,4 +21,4 @@ jobs:
 
     - name: Run tests
       shell: pwsh  # Use PowerShell for Windows
-      run: python -m main_tests.py
+      run: python -m main_tests
