@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 from utilities.DataContainer.DataContainer import DataContainer
 from utilities.Regressor.Regressor import Regressor
 from config.Config import Config
@@ -47,8 +48,13 @@ class TestsUnit:
         self.tests_unit_data_container()
         self.tests_unit_regressor()
 
+    @pytest.fixture
+    def data_container(self) -> DataContainer:
+        """Fixture providing DataContainer instance"""
+        return DataContainer(self.config)
+
     def tests_unit_regressor(self):
-        data_container = DataContainer(self.config)
+        data_container = self.data_container()
 
         lag_df = data_container.compute_first_order_lag(self.monthly_test_df.copy())
         df = self.monthly_test_df.copy()
@@ -69,8 +75,7 @@ class TestsUnit:
         expected_df = pd.DataFrame([df, lag_df], index=['DF', 'LAG_DF']).T
         expected_df.index = pd.to_datetime(['2010-02-01', '2010-03-01', '2010-04-01', '2010-05-01'])
         assert (expected_df == concat_df).all().all()
-        logging.info('concat_dfs_unit_test = Success!')
-        return 
+        logging.info('concat_dfs_unit_test = Success!') 
 
     @staticmethod
     def test_unit_compute_ols(regressor: Regressor):
@@ -96,7 +101,7 @@ class TestsUnit:
         logging.info('compute_granger_causality = Success!')
 
     def tests_unit_data_container(self):
-        data_container = DataContainer(self.config)
+        data_container = self.data_container()
 
         self.test_unit_find_frequency(data_container)
 
