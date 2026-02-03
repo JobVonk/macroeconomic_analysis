@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   test:
-    runs-on: windows-latest  # 👈 This is the key change!
+    runs-on: windows-latest
     
     steps:
     - name: Checkout code
@@ -12,9 +12,10 @@ jobs:
     - name: Setup
       run: |
         echo "Running on Windows!"
-        # Windows commands use cmd/powershell syntax
         Get-Date
         Write-Host "Current directory:" (Get-Location)
+        # List files to debug
+        Get-ChildItem
     
     - name: Install dependencies
       run: pip install -r requirements.txt
@@ -22,7 +23,7 @@ jobs:
     - name: Run tests with coverage
       run: |
         pip install pytest pytest-cov
-        pytest --cov=my_package --cov-report=xml --cov-report=term ./main_tests
+        pytest --cov=. --cov-report=xml --cov-report=term main_tests.py
         
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
