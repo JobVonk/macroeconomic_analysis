@@ -7,7 +7,8 @@ import logging
 
 
 class TestsUnit:
-    def __init__(self):
+    def setup_method(self):
+        # runs before the test methods
         self.config = Config()
 
         self.daily_dates = ['2010-01-01', '2010-01-02', '2010-01-03', '2010-01-04', '2010-01-05']

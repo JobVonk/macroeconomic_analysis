@@ -13,6 +13,7 @@ root.addHandler(handler)
 
 def main_tests():
     unit_tests = TestsUnit()
+    unit_tests.setup_method()
     unit_tests.run()
 
 if __name__ == "__main__":
