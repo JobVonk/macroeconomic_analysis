@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+    
+    triggers {
+        pollSCM('H/5 * * * *') // Polls SCM every 5 minutes
+        // OR use GitHub webhook (recommended - see step 3)
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git',
+                    credentialsId: 'YOUR_CREDENTIALS_ID'
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                // Adjust based on your project type
+                sh 'npm install'    // For Node.js
+                // OR sh 'pip install -r requirements.txt'  // For Python
+                // OR sh 'bundle install'  // For Ruby
+                // OR use your package manager
+            }
+        }
+        
+        stage('Run Tests') {
+            steps {
+                // Run your test script
+                sh './run_tests.sh'
+                // OR sh 'npm test'
+                // OR sh 'pytest'
+                // OR sh 'python -m pytest'
+                // Adjust to match your test command
+            }
+        }
+        
+        // Optional: Build stage
+        stage('Build') {
+            steps {
+                sh './build.sh' // If you have a build script
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Tests passed!'
+        }
+        failure {
+            echo 'Tests failed!'
+        }
+    }
+}
