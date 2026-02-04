@@ -15,8 +15,9 @@ class TestsUnit:
     
     def setup_method(self):
         # runs before the test methods
-        self.config = Config()
-        self.data_container = DataContainer(self.config)
+        
+        config = Config()
+        self.data_container = DataContainer(config)
 
         self.daily_dates = ['2010-01-01', '2010-01-02', '2010-01-03', '2010-01-04', '2010-01-05']
         self.daily_values = [0.05, 0.08, 0.06, 0.11, 0.14]
@@ -54,7 +55,7 @@ class TestsUnit:
         self.tests_unit_regressor()
 
     def tests_unit_regressor(self):
-        
+
         lag_df = self.data_container.compute_first_order_lag(self.monthly_test_df.copy())
         df = self.monthly_test_df.copy()
         df.columns = ['DATE', 'DF']
