@@ -50,26 +50,27 @@ class TestsUnit:
         self.yearly_test_df['DATE'] = pd.to_datetime(self.yearly_test_df['DATE'], format='%Y-%m-%d')
         self.yearly_test_df['VALUE'] = pd.to_numeric(self.yearly_test_df['VALUE'], errors='coerce')
 
-    def run(self):
-        self.tests_unit_data_container()
-        self.tests_unit_regressor()
-
-    def tests_unit_regressor(self):
-
+        
         lag_df = self.data_container.compute_first_order_lag(self.monthly_test_df.copy())
         df = self.monthly_test_df.copy()
         df.columns = ['DATE', 'DF']
         lag_df.columns = ['DATE', 'LAG_DF']
         df_dict = {'DF': df, 'LAG_DF': lag_df}
 
-        regressor = Regressor(df_dict, 'DF', ['LAG_DF'])
-        self.test_unit_concat_dfs(regressor)
-        self.test_unit_compute_ols(regressor)
-        self.test_unit_compute_granger_causality(regressor)
+        self.regressor = Regressor(df_dict, 'DF', ['LAG_DF'])
 
-    @staticmethod
-    def test_unit_concat_dfs(regressor: Regressor):
-        concat_df = regressor.concat_dfs(['DF', 'LAG_DF'])
+    def run(self):
+        self.tests_unit_data_container()
+        self.tests_unit_regressor()
+
+    def tests_unit_regressor(self):
+
+        self.test_unit_concat_dfs()
+        self.test_unit_compute_ols()
+        self.test_unit_compute_granger_causality()
+
+    def test_unit_concat_dfs(self):
+        concat_df = self.regressor.concat_dfs(['DF', 'LAG_DF'])
         df = [0.02, 0.03, 0.4, 0.5]
         lag_df = [0.01, 0.02, 0.03, 0.4]
         expected_df = pd.DataFrame([df, lag_df], index=['DF', 'LAG_DF']).T
@@ -77,11 +78,10 @@ class TestsUnit:
         assert (expected_df == concat_df).all().all()
         logging.info('concat_dfs_unit_test = Success!') 
 
-    @staticmethod
-    def test_unit_compute_ols(regressor: Regressor):
+    def test_unit_compute_ols(self):
         y = np.array([2, 2, 2, 2, 2]).reshape(5, 1)
         x = np.array([1, 1, 1, 1, 1]).reshape(5, 1)
-        df_table = regressor.compute_ols(y, x)
+        df_table = self.regressor.compute_ols(y, x)
 
         expected_df = pd.DataFrame(['2.0***',0.00000, 9007199254740992.000, 0.00000], 
                                    index=['param',
@@ -92,11 +92,10 @@ class TestsUnit:
         assert (expected_df.round(6) == df_table.round(6)).all().all()
         logging.info('compute_ols_unit_test = Success!')
 
-    @staticmethod
-    def test_unit_compute_granger_causality(regressor: Regressor):
+    def test_unit_compute_granger_causality(self):
         y = np.array([1, 4, 6, 7, 11, 13, 14, 17]).reshape(8, 1)
         x = np.array([1, 2, 3, 4, 5, 6, 7, 8]).reshape(8, 1)
-        df_table = regressor.compute_granger_causality(y, x, max_lag=1)
+        df_table = self.regressor.compute_granger_causality(y, x, max_lag=1)
         expected_df = pd.DataFrame([0.03641, 0.00004, 0.00345, 0.03641, 1.0000],
                                    index=['ssr_ftest', 'ssr_chi2test', 'lrtest', 'params_ftest', 'lag']).T
         assert (expected_df.round(5) == df_table.round(5)).all().all()
@@ -104,25 +103,25 @@ class TestsUnit:
 
     def tests_unit_data_container(self):
 
-        self.test_unit_find_frequency(self.data_container)
+        self.test_unit_find_frequency()
 
-        self.test_unit_lag(self.data_container)
-        self.test_unit_minus(self.data_container)
-        self.test_unit_division10(self.data_container)
-        self.test_unit_division1m(self.data_container)
-        self.test_unit_division1t(self.data_container)
-        self.test_unit_to_daily_data(self.data_container)
-        self.test_unit_to_monthly_data(self.data_container)
-        self.test_unit_to_quarterly_data(self.data_container)
-        self.test_unit_to_yearly_data(self.data_container)
-        self.test_unit_to_first_of_month(self.data_container)
-        self.test_unit_select_time_window(self.data_container)
+        self.test_unit_lag()
+        self.test_unit_minus()
+        self.test_unit_division10()
+        self.test_unit_division1m()
+        self.test_unit_division1t()
+        self.test_unit_to_daily_data()
+        self.test_unit_to_monthly_data()
+        self.test_unit_to_quarterly_data()
+        self.test_unit_to_yearly_data()
+        self.test_unit_to_first_of_month()
+        self.test_unit_select_time_window()
 
-        self.test_unit_change(self.data_container)
-        self.test_unit_relative_returns(self.data_container)
+        self.test_unit_change()
+        self.test_unit_relative_returns()
 
-    def test_unit_to_first_of_month(self, data_container):
-        weekly_df = data_container.to_first_of_month(self.weekly_test_df)
+    def test_unit_to_first_of_month(self):
+        weekly_df = self.data_container.to_first_of_month(self.weekly_test_df)
         weekly_dates = ['2010-01-01', '2010-01-01', '2010-01-01', '2010-01-01', '2010-01-01', '2010-02-01', '2010-02-01']
         weekly_values = [0.09, 0.08, 0.07, 0.06, 0.05, 0.04, 0.03]
         expected_weekly = pd.DataFrame([weekly_dates, weekly_values], index=['DATE', 'VALUE']).T
@@ -130,8 +129,8 @@ class TestsUnit:
         assert (weekly_df.iloc[1:, :] == expected_weekly.iloc[1:, :]).all().all()
         logging.info('to_first_of_month_unit_test = Success!')
 
-    def test_unit_lag(self, data_container):
-        daily_df = data_container.compute_first_order_lag(self.daily_test_df.copy())
+    def test_unit_lag(self):
+        daily_df = self.data_container.compute_first_order_lag(self.daily_test_df.copy())
         daily_dates = ['2010-01-01', '2010-01-02', '2010-01-03', '2010-01-04', '2010-01-05']
         daily_values = [np.nan, 0.05, 0.08, 0.06, 0.11]
         expected_daily = pd.DataFrame([daily_dates, daily_values], index=['DATE', 'VALUE']).T
@@ -139,8 +138,8 @@ class TestsUnit:
         assert (daily_df.iloc[1:, :] == expected_daily.iloc[1:, :]).all().all()
         logging.info('lag_unit_test = Success!')
 
-    def test_unit_minus(self, data_container):
-        quarterly_df = data_container.minus(self.quarterly_test_df.copy())
+    def test_unit_minus(self):
+        quarterly_df = self.data_container.minus(self.quarterly_test_df.copy())
         expected_quarterly_dates = ['2010-01-01', '2010-04-01', '2010-07-01', '2010-10-01', '2011-01-01']
         expected_quarterly_values = [0.01, 0.02, 0.03, 0.4, 0.5]
         expected_quarterly_df = pd.DataFrame([expected_quarterly_dates, expected_quarterly_values], index=['DATE', 'VALUE']).T
@@ -149,8 +148,8 @@ class TestsUnit:
         assert (expected_quarterly_df == quarterly_df).all().all()
         logging.info('minus_unit_test = Success!')
 
-    def test_unit_division10(self, data_container):
-        quarterly_df = data_container.division_10(self.quarterly_test_df.copy())
+    def test_unit_division10(self):
+        quarterly_df = self.data_container.division_10(self.quarterly_test_df.copy())
         expected_quarterly_dates = ['2010-01-01', '2010-04-01', '2010-07-01', '2010-10-01', '2011-01-01']
         expected_quarterly_values = [-0.001, -0.002, -0.003, -0.04, -0.05]
         expected_quarterly_df = pd.DataFrame([expected_quarterly_dates, expected_quarterly_values], index=['DATE', 'VALUE']).T
@@ -159,9 +158,9 @@ class TestsUnit:
         assert (expected_quarterly_df == quarterly_df).all().all()
         logging.info('division10_unit_test = Success!')
 
-    def test_unit_division1m(self, data_container):
+    def test_unit_division1m(self):
 
-        quarterly_df = data_container.division_1m(self.quarterly_test_df.copy())
+        quarterly_df = self.data_container.division_1m(self.quarterly_test_df.copy())
         expected_quarterly_dates = ['2010-01-01', '2010-04-01', '2010-07-01', '2010-10-01', '2011-01-01']
         expected_quarterly_values = [-0.00000001, -0.00000002, -0.00000003, -0.0000004, -0.0000005]
         expected_quarterly_df = pd.DataFrame([expected_quarterly_dates, expected_quarterly_values], index=['DATE', 'VALUE']).T
@@ -170,8 +169,8 @@ class TestsUnit:
         assert (expected_quarterly_df == quarterly_df.round(8)).all().all()
         logging.info('division1m_unit_test = Success!')
 
-    def test_unit_division1t(self, data_container):
-        quarterly_df = data_container.division_1t(self.quarterly_test_df.copy())
+    def test_unit_division1t(self):
+        quarterly_df = self.data_container.division_1t(self.quarterly_test_df.copy())
         expected_quarterly_dates = ['2010-01-01', '2010-04-01', '2010-07-01', '2010-10-01', '2011-01-01']
         expected_quarterly_values = [-0.00000000000001, -0.00000000000002, -0.00000000000003, -0.0000000000004,
                                      -0.0000000000005]
@@ -181,8 +180,8 @@ class TestsUnit:
         assert (expected_quarterly_df == quarterly_df.round(14)).all().all()
         logging.info('division1t_unit_test = Success!')
 
-    def test_unit_change(self, data_container):
-        monthly_df = data_container.compute_first_order_difference(self.monthly_test_df.copy())
+    def test_unit_change(self):
+        monthly_df = self.data_container.compute_first_order_difference(self.monthly_test_df.copy())
 
         monthly_dates = ['2010-01-01', '2010-02-01', '2010-03-01', '2010-04-01', '2010-05-01']
         monthly_values = [np.nan, 0.01, 0.01, 0.37, 0.1]
@@ -192,8 +191,8 @@ class TestsUnit:
         assert (monthly_df.iloc[1:, :].round(4) == expected_monthly.iloc[1:, :]).all().all()
         logging.info('change_unit_test = Success!')
 
-    def test_unit_relative_returns(self, data_container):
-        monthly_df = data_container.compute_relative_returns(self.monthly_test_df.copy())
+    def test_unit_relative_returns(self):
+        monthly_df = self.data_container.compute_relative_returns(self.monthly_test_df.copy())
 
         monthly_dates = ['2010-01-01', '2010-02-01', '2010-03-01', '2010-04-01', '2010-05-01']
         monthly_values = [np.float64(np.nan), 0.5, 0.3333333333333333, 0.925, 0.2]
@@ -203,30 +202,30 @@ class TestsUnit:
         assert (monthly_df.iloc[1:, :].round(6) == expected_monthly.iloc[1:, :].round(6)).all().all()
         logging.info('relative_returns_unit_test = Success!')
 
-    def test_unit_find_frequency(self, data_container):
-        freq = data_container.find_frequency(self.daily_test_df)
+    def test_unit_find_frequency(self):
+        freq = self.data_container.find_frequency(self.daily_test_df)
         expected_freq = 'D'
         assert freq == expected_freq
 
-        freq = data_container.find_frequency(self.weekly_test_df)
+        freq = self.data_container.find_frequency(self.weekly_test_df)
         expected_freq = 'W'
         assert freq == expected_freq
 
-        freq = data_container.find_frequency(self.monthly_test_df)
+        freq = self.data_container.find_frequency(self.monthly_test_df)
         expected_freq = 'M'
         assert freq == expected_freq
 
-        freq = data_container.find_frequency(self.quarterly_test_df)
+        freq = self.data_container.find_frequency(self.quarterly_test_df)
         expected_freq = 'Q'
         assert freq == expected_freq
 
-        freq = data_container.find_frequency(self.yearly_test_df)
+        freq = self.data_container.find_frequency(self.yearly_test_df)
         expected_freq = 'Y'
         assert freq == expected_freq
         logging.info('find_freqency_unit_test = Success!')
 
-    def test_unit_to_daily_data(self, data_container):
-        df_daily = data_container.to_daily_data(self.daily_test_df.copy())
+    def test_unit_to_daily_data(self):
+        df_daily = self.data_container.to_daily_data(self.daily_test_df.copy())
 
         daily_dates = ['2010-01-01', '2010-01-02', '2010-01-03', '2010-01-04', '2010-01-05']
         daily_values = [0.05, 0.08, 0.06, 0.11, 0.14]
@@ -234,10 +233,10 @@ class TestsUnit:
         expected_daily['DATE'] = pd.to_datetime(expected_daily['DATE'], format='%Y-%m-%d')
         assert (df_daily == expected_daily).all().all()
 
-        daily_freq = data_container.find_frequency(df_daily)
+        daily_freq = self.data_container.find_frequency(df_daily)
         assert daily_freq == 'D'
 
-        df_weekly = data_container.to_daily_data(self.weekly_test_df.copy())
+        df_weekly = self.data_container.to_daily_data(self.weekly_test_df.copy())
         weekly_dates = ['2010-01-01', '2010-01-02', '2010-01-03', '2010-01-04', '2010-01-05', '2010-01-06',
                         '2010-01-07', '2010-01-08', '2010-01-09', '2010-01-10', '2010-01-11', '2010-01-12',
                         '2010-01-13', '2010-01-14', '2010-01-15', '2010-01-16', '2010-01-17', '2010-01-18',
@@ -257,12 +256,12 @@ class TestsUnit:
 
         assert (df_weekly.round(6) == expected_weekly).all().all()
 
-        weekly_freq = data_container.find_frequency(df_weekly)
+        weekly_freq = self.data_container.find_frequency(df_weekly)
         assert weekly_freq == 'D'
         logging.info('to_daily_data_unit_test = Success!')
 
-    def test_unit_to_monthly_data(self, data_container):
-        df_quarterly = data_container.to_monthly_data(self.quarterly_test_df.copy())
+    def test_unit_to_monthly_data(self):
+        df_quarterly = self.data_container.to_monthly_data(self.quarterly_test_df.copy())
 
         quarterly_dates = ['2010-01-31', '2010-02-28', '2010-03-31', '2010-04-30', '2010-05-31',
                            '2010-06-30', '2010-07-31', '2010-08-31', '2010-09-30', '2010-10-31',
@@ -273,10 +272,10 @@ class TestsUnit:
         expected_quarterly['DATE'] = pd.to_datetime(expected_quarterly['DATE'], format='%Y-%m-%d')
         assert (df_quarterly.round(6) == expected_quarterly).all().all()
 
-        quarterly_freq = data_container.find_frequency(df_quarterly)
+        quarterly_freq = self.data_container.find_frequency(df_quarterly)
         assert quarterly_freq == 'M'
 
-        df_weekly = data_container.to_monthly_data(self.weekly_test_df.copy())
+        df_weekly = self.data_container.to_monthly_data(self.weekly_test_df.copy())
         weekly_dates = ['2010-01-01', '2010-02-05']
         weekly_values = [0.090000, 0.040000]
         expected_weekly = pd.DataFrame([weekly_dates, weekly_values], index=['DATE', 'VALUE']).T
@@ -285,12 +284,12 @@ class TestsUnit:
 
         assert (df_weekly.round(6) == expected_weekly).all().all()
 
-        daily_freq = data_container.find_frequency(df_weekly)
+        daily_freq = self.data_container.find_frequency(df_weekly)
         assert daily_freq == 'M'
         logging.info('to_monthly_data_unit_test = Success!')
 
-    def test_unit_to_quarterly_data(self, data_container):
-        df_monthly = data_container.to_quarterly_data(self.monthly_test_df.copy())
+    def test_unit_to_quarterly_data(self):
+        df_monthly = self.data_container.to_quarterly_data(self.monthly_test_df.copy())
 
         monthly_dates = ['2010-01-01', '2010-04-01']
         monthly_values = [0.010000, 0.4]
@@ -298,10 +297,10 @@ class TestsUnit:
         expected_monthly['DATE'] = pd.to_datetime(expected_monthly['DATE'], format='%Y-%m-%d')
         assert (df_monthly.round(6) == expected_monthly).all().all()
 
-        quarterly_freq = data_container.find_frequency(df_monthly)
+        quarterly_freq = self.data_container.find_frequency(df_monthly)
         assert quarterly_freq == 'Q'
 
-        df_yearly = data_container.to_quarterly_data(self.yearly_test_df.copy())
+        df_yearly = self.data_container.to_quarterly_data(self.yearly_test_df.copy())
         yearly_dates = ['2010-03-31', '2010-06-30', '2010-09-30', '2010-12-31', '2011-03-31', '2011-06-30', '2011-09-30',
                         '2011-12-31', '2012-03-31', '2012-06-30', '2012-09-30', '2012-12-31', '2013-03-31', '2013-06-30',
                         '2013-09-30', '2013-12-31', '2014-03-31']
@@ -313,12 +312,12 @@ class TestsUnit:
 
         assert (df_yearly.round(6) == expected_yearly).all().all()
 
-        yearly_freq = data_container.find_frequency(df_yearly)
+        yearly_freq = self.data_container.find_frequency(df_yearly)
         assert yearly_freq == 'Q'
         logging.info('to_quarterly_data_unit_test = Success!')
 
-    def test_unit_to_yearly_data(self, data_container):
-        df_quarterly = data_container.to_yearly_data(self.quarterly_test_df.copy())
+    def test_unit_to_yearly_data(self):
+        df_quarterly = self.data_container.to_yearly_data(self.quarterly_test_df.copy())
 
         quarterly_dates = ['2010-01-01', '2011-01-01']
         quarterly_values = [-0.010000, -0.50000]
@@ -326,14 +325,14 @@ class TestsUnit:
         expected_quarterly['DATE'] = pd.to_datetime(expected_quarterly['DATE'], format='%Y-%m-%d')
         assert (df_quarterly.round(6) == expected_quarterly).all().all()
 
-        quarterly_freq = data_container.find_frequency(df_quarterly)
+        quarterly_freq = self.data_container.find_frequency(df_quarterly)
         assert quarterly_freq == 'Y'
         logging.info('to_yearly_data_unit_test = Success!')
 
-    def test_unit_select_time_window(self, data_container):
-        data_container.start_date = pd.Timestamp(year=2012, month=1, day=1)     # end date
-        data_container.end_date = pd.Timestamp(year=2013, month=6, day=1)
-        df = data_container.select_time_window(self.yearly_test_df)
+    def test_unit_select_time_window(self):
+        self.data_container.start_date = pd.Timestamp(year=2012, month=1, day=1)     # end date
+        self.data_container.end_date = pd.Timestamp(year=2013, month=6, day=1)
+        df = self.data_container.select_time_window(self.yearly_test_df)
         dates = ['2012-01-01', '2013-01-01']
         values = [0.03, -0.4]
         expected_df = pd.DataFrame([dates, values], index=['DATE', 'VALUE']).T
