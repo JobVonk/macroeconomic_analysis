@@ -13,6 +13,7 @@ class MacroEconomicAnalysisRunner(AbstractTestRunner):
     def run(self, df_dict: dict):
         regressor = Regressor(df_dict, self.y_var, self.x_vars_list)
         regressor.run(self.regression_type)
+        
         #
         # granger_df = regressor.granger_causality_to_df(self.y_var, self.x_vars_list)
         # oil = df_dict['DCOILBRENTEU']

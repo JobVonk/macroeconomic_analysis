@@ -18,7 +18,10 @@ class Config:
         self.ecb_fed_bool = False
         self.plot_type = 'line'
 
-        # ----------------------- regression params --------------
+        # ----------------------- backtester params -----------------------
+        self.window_size = 40
+
+        # ----------------------- regression params ----------------------- 
 
         self.ecb_bool = False
         self.fed_bool = True
@@ -236,6 +239,86 @@ class Config:
             self.cb_folder = 'data_fed/'
 
     def test_parameters(self):
+
+
+        if not isinstance(self.start_date, pd.Timestamp):
+            raise Exception('start_date in config is not of type pd.Timestamp.')
+        
+        if not isinstance(self.end_date, pd.Timestamp):
+            raise Exception('end_date in config is not of type pd.Timestamp.')
+        
+        if not isinstance(self.freq, str):
+            raise Exception('freq in config is not of type str.')
+        
+        if not isinstance(self.returns_bool, bool):
+            raise Exception('returns_bool in config is not of type bool.')
+
+        if not isinstance(self.lag, int):
+            raise Exception('lag in config is not of type int.')
+        
+        if not isinstance(self.clean_bool, bool):
+            raise Exception('clean_bool in config is not of type bool.')
+
+        if not isinstance(self.data_folder_path, str):
+            raise Exception('data_folder_path in config is not of type str.')
+
+        if not isinstance(self.output_path, str):
+            raise Exception('output_path in config is not of type str.')
+        
+        if not isinstance(self.output_path, str):
+            raise Exception('output_path in config is not of type str.')
+
+        if not isinstance(self.ecb_fed_bool, bool):
+            raise Exception('ecb_fed_bool in config is not of type bool.')
+
+        if not isinstance(self.plot_type, str):
+            raise Exception('plot_type in config is not of type str.')
+
+        if not isinstance(self.window_size, int):
+            raise Exception('window_size in config is not of type int.')
+        
+        if not isinstance(self.ecb_bool, bool):
+            raise Exception('ecb_bool in config is not of type bool.')
+
+        if not isinstance(self.fed_bool, bool):
+            raise Exception('fed_bool in config is not of type bool.')
+
+        if not isinstance(self.folder_name, str):
+            raise Exception('folder_name in config is not of type str.')
+        
+        if not isinstance(self.plot_title, str):
+            raise Exception('plot_title in config is not of type str.')
+                
+        if not isinstance(self.plot_legend_names, dict):
+            raise Exception('plot_legend_names in config is not of type dict.')
+
+        if not isinstance(self.plot_colors, dict):
+            raise Exception('plot_colors in config is not of type dict.')
+        
+        if not isinstance(self.plot_linestyles_dict, dict):
+            raise Exception('plot_linestyles_dict in config is not of type dict.')
+        
+        if not isinstance(self.process_dict, dict):
+            raise Exception('process_dict in config is not of type dict.')
+        
+        if not isinstance(self.ymin, int):
+            raise Exception('ymin in config is not of type float.')
+        
+        if not isinstance(self.ymax, int):
+            raise Exception('ymax in config is not of type float.')
+        
+        if not isinstance(self.ylabel, str):
+            raise Exception('ylabel in config is not of type str.')
+        
+        if not isinstance(self.regression_type, str):
+            raise Exception('regression_type in config is not of type str.')
+
+        if not isinstance(self.y_var, str):
+            raise Exception('y_var in config is not of type str.')
+
+        if not isinstance(self.x_vars_list, list):
+            raise Exception('x_vars_list in config is not of type list[str].')
+
         if (self.regression_type == 'granger') & (len(self.x_vars_list) + 1 > 2):
             raise Exception('Granger causality can only be computed among a pair of variables. '
                             'Make sure that y_var + x_vars_list is not larger than 2 variables.')

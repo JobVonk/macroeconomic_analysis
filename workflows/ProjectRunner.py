@@ -2,6 +2,7 @@ from workflows.CreatePlots.CreatePlotRunner import CreatePlotRunner
 from workflows.RealEstateAnalysis.RealEstateAnalysisRunner import RealEstateAnalysisRunner
 from workflows.DataAnalysis.DataAnalysisRunner import DataAnalysisRunner
 from workflows.MacroEconomicAnalysis.MacroEconomicAnalysisRunner import MacroEconomicAnalysisRunner
+from workflows.BacktestAnalysis.BacktestRunner import BacktestRunner
 from utilities.DataContainer.DataContainer import DataContainer
 from config.Config import Config
 import pandas as pd
@@ -13,7 +14,8 @@ class ProjectRunner:
         self.test_name = test_name
         self.data_path = r'C:\Users\jjvon\Documents\data'
         self.dict = {'create_plots': CreatePlotRunner, 'real_estate_analysis': RealEstateAnalysisRunner,
-                     'data_analysis': DataAnalysisRunner, 'macro_economic_analysis': MacroEconomicAnalysisRunner}
+                     'data_analysis': DataAnalysisRunner, 'macro_economic_analysis': MacroEconomicAnalysisRunner,
+                     'backtester': BacktestRunner}
 
     def run(self):
         config = Config()
