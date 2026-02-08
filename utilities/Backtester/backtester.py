@@ -50,8 +50,6 @@ class Backtester:
         net_cum_profits = cum_trade_profits - cum_cost
         
     
-
-
     @staticmethod
     def obj_sum(strat_deltas: pd.DataFrame, backtest_df: pd.DataFrame) -> tuple[pd.DataFrame]:
         profits = strat_deltas * backtest_df.diff(1).shift(-1)
@@ -70,8 +68,8 @@ class Backtester:
         return delta
 
     @staticmethod
-    def proportional_transaction_cost(strat_deltas: pd.DataFrame, proportioanl_cost: float) -> pd.DataFrame:
-        cost_df = proportioanl_cost * strat_deltas.diff(1)
+    def proportional_transaction_cost(strat_deltas: pd.DataFrame, proportional_cost: float) -> pd.DataFrame:
+        cost_df = proportional_cost * strat_deltas.diff(1)
         total_cost = np.sum(abs(cost_df))
         cum_cost = abs(cost_df).cumsum()
         return total_cost, cum_cost

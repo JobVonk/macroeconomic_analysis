@@ -77,6 +77,60 @@ class TestsUnit:
 
     def test_backtester(self):
         self.test_mean_strat()
+        self.test_obj_sum()
+        self.test_proportional_transaction_cost()
+
+    def test_obj_sum(self):
+
+        delta_dates = ['2010-01-01', '2010-02-01', '2010-03-01', '2010-04-01', '2010-05-01']
+        delta_values = [np.nan, 0, 0.5, 1., 0.]
+        test_delta_df = pd.DataFrame([delta_dates, delta_values], index=['DATE', 'VALUE']).T
+        test_delta_df['DATE'] = pd.to_datetime(test_delta_df['DATE'], format='%Y-%m-%d')
+        test_delta_df['VALUE'] = pd.to_numeric(test_delta_df['VALUE'], errors='coerce')
+        test_delta_df = test_delta_df.set_index('DATE', inplace=False)
+
+        test_estimation_df =  self.monthly_test_df.set_index('DATE', inplace=False)
+        trade_profit, cum_trade_profits =  self.backtester.obj_sum(test_estimation_df, test_delta_df)
+        
+        expected_trade_profit = np.float64(-0.375)
+        assert (expected_trade_profit == trade_profit).all().all()
+
+        expected_dates = ['2010-01-01', '2010-02-01', '2010-03-01', '2010-04-01', '2010-05-01']
+        expected_values = [np.float64('nan'), 0.010, 0.025, -0.375, np.float64('nan')]
+        expected_delta_df = pd.DataFrame([expected_dates, expected_values], index=['DATE', 'VALUE']).T
+        expected_delta_df['DATE'] = pd.to_datetime(expected_delta_df['DATE'], format='%Y-%m-%d')
+        expected_delta_df['VALUE'] = pd.to_numeric(expected_delta_df['VALUE'], errors='coerce')
+
+        expected_delta_df = expected_delta_df.set_index('DATE', inplace=False)
+
+        assert expected_delta_df.round(6).equals(cum_trade_profits.round(6))
+        logging.info('test_obj_sum = Success!')
+
+    def test_proportional_transaction_cost(self):
+        
+        proportional_cost = 0.1
+        
+        delta_dates = ['2010-01-01', '2010-02-01', '2010-03-01', '2010-04-01', '2010-05-01']
+        delta_values = [np.nan, 0, 0.5, 1., 0.]
+        test_delta_df = pd.DataFrame([delta_dates, delta_values], index=['DATE', 'VALUE']).T
+        test_delta_df['DATE'] = pd.to_datetime(test_delta_df['DATE'], format='%Y-%m-%d')
+        test_delta_df['VALUE'] = pd.to_numeric(test_delta_df['VALUE'], errors='coerce')
+        test_delta_df = test_delta_df.set_index('DATE', inplace=False)
+
+        cost, cum_cost = self.backtester.proportional_transaction_cost(test_delta_df, proportional_cost)
+        expected_cost = np.float64(0.2)
+        assert (expected_cost == cost).all().all()
+
+        expected_dates = ['2010-01-01', '2010-02-01', '2010-03-01', '2010-04-01', '2010-05-01']
+        expected_values = [np.float64('nan'), np.float64('nan'), 0.05, 0.1, 0.2]
+        expected_cum_cost_df = pd.DataFrame([expected_dates, expected_values], index=['DATE', 'VALUE']).T
+        expected_cum_cost_df['DATE'] = pd.to_datetime(expected_cum_cost_df['DATE'], format='%Y-%m-%d')
+        expected_cum_cost_df['VALUE'] = pd.to_numeric(expected_cum_cost_df['VALUE'], errors='coerce')
+
+        expected_cum_cost_df = expected_cum_cost_df.set_index('DATE', inplace=False)
+
+        assert expected_cum_cost_df.round(6).equals(cum_cost.round(6))
+        logging.info('test_proportional_transaction_cost = Success!')
 
     def test_mean_strat(self):
         test_array = np.array([1,2,3,4,1])
