@@ -12,14 +12,22 @@ class Config:
         self.returns_bool = False          # specify if data has to be in terms of returns
         self.lag = 0                       # specify a if data has to be lagged
         self.clean_bool = True             # If true data is cleaned from possible inf or nan values
-        self.data_folder_path = "C:/Users/jjvon/macro_economic_analysis/macro_economic_analysis/data/"
-        self.output_path = self.data_folder_path + '../results/macro_economic_anlaysis/'
+        self.data_folder_path = "C:/Users/jjvon/Documents/visual code/macro_economic_analysis/data/"
+        self.output_path = self.data_folder_path + '../../results/macro_economic_anlaysis/'
 
         self.ecb_fed_bool = False
         self.plot_type = 'line'
 
         # ----------------------- backtester params -----------------------
-        self.window_size = 40
+        
+        self.window_size = 3
+        self.estimation_data_list = ['CPIAUCSL_PC1', 'CPILFESL_PC1', 'UNRATE']
+        self.backtest_data_list = ['CPIAUCSL_PC1', 'CPILFESL_PC1', 'UNRATE']
+        self.strategy_list = ['mean_strat']
+        self.objective_list = ['obj_sum']
+        self.transaction_cost_bool = True
+        self.transaction_cost_list = ['proportional_cost']    
+        self.transaction_cost = 0.01
 
         # ----------------------- regression params ----------------------- 
 
@@ -319,6 +327,30 @@ class Config:
         if not isinstance(self.x_vars_list, list):
             raise Exception('x_vars_list in config is not of type list[str].')
 
+        if not isinstance(self.estimation_data_list, list):
+            raise Exception('estimation_data_list in config is not of type list[str].')            
+        
+        if not isinstance(self.backtest_data_list, list):
+            raise Exception('backtest_data_list in config is not of type list[str].')
+
+        if not isinstance(self.strategy_list, list):
+            raise Exception('strategy_list in config is not of type list[str].')   
+        
+        if not isinstance(self.objective_list, list):
+            raise Exception('objective_list in config is not of type list[str].')   
+        
+        if not isinstance(self.transaction_cost_bool, bool):
+            raise Exception('transaction_cost_bool in config is not of type bool.')   
+             
+        if not isinstance(self.transaction_cost_list, list):
+            raise Exception('transaction_cost_list in config is not of type list.')   
+             
+        if not isinstance(self.transaction_cost, float):
+            raise Exception('transaction_cost in config is not of type float.')   
+             
+        if not (len(self.transaction_cost_list) == len(self.objective_list) == len(self.strategy_list)):
+           raise Exception('self.transaction_cost_list, self.objective_list and self.strategy_list must be of the same lenght.') 
+
         if (self.regression_type == 'granger') & (len(self.x_vars_list) + 1 > 2):
             raise Exception('Granger causality can only be computed among a pair of variables. '
                             'Make sure that y_var + x_vars_list is not larger than 2 variables.')
@@ -334,6 +366,21 @@ class Config:
                                 'to_daily, to_weekly, to_monthly, to_quarterly, to_yearly, relative_returns, '
                                 'clean, compute_change, division_10, division_1m, division_1t, minus, lag_1, '
                                 'to_first_of_month, lag_3, lag_6, lag_12, time_window')
+
+        
+        correct_strategy_list = ['mean_strat']
+        correct_objective_list = ['obj_sum']
+        correct_transaction_cost_list = ['proportional_cost']
+
+        self.check_settings_list(self.strategy_list, correct_strategy_list)
+        self.check_settings_list(self.objective_list, correct_objective_list)
+        self.check_settings_list(self.transaction_cost_list, correct_transaction_cost_list)
+
+    @staticmethod
+    def check_settings_list(settings_list: list[str], correct_settings_list: list[str]):
+        for setting in settings_list:
+            if setting not in correct_settings_list:
+                raise Exception(f'Settings list {settings_list} is incorrectly specified. Choose from: {correct_settings_list}.')
 
         #         self.fed_files = ['fed_cpi', 'fed_deficit', 'fed_crude_oil', 'fed_population', 'fed_gdp',
         #                       'fed_usd_ger', 'fed_usd_yen', 'fed_usd_china', 'fed_M1SL', 'fed_M2SL', 'fed_M3SL', 'fed_FEDFUNDS',

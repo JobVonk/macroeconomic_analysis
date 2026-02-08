@@ -37,7 +37,6 @@ class DataContainer:
                           'to_first_of_month': self.to_first_of_month, 'lag_3': self.compute_third_order_lag,
                           'lag_6': self.compute_sixt_order_lag, 'lag_12': self.compute_twelfth_order_lag,
                           'time_window': self.select_time_window}
-
     def run(self):
         self.process_data()
 

@@ -12,10 +12,10 @@ import os
 class ProjectRunner:
     def __init__(self, test_name):
         self.test_name = test_name
-        self.data_path = r'C:\Users\jjvon\Documents\data'
+        self.data_path = r'C:\Users\jjvon\Documents\visual code\macro_economic_analysis\data'
         self.dict = {'create_plots': CreatePlotRunner, 'real_estate_analysis': RealEstateAnalysisRunner,
                      'data_analysis': DataAnalysisRunner, 'macro_economic_analysis': MacroEconomicAnalysisRunner,
-                     'backtester': BacktestRunner}
+                     'backtest': BacktestRunner}
 
     def run(self):
         config = Config()
