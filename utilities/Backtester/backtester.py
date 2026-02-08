@@ -48,7 +48,8 @@ class Backtester:
 
         net_profit = trade_profit - cost
         net_cum_profits = cum_trade_profits - cum_cost
-        b=1
+        
+    
 
 
     @staticmethod

@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from utilities.Regressor.Regressor import Regressor
 from config.Config import Config
 from utilities.DataContainer.DataContainer import DataContainer
-
+from utilities.Backtester.backtester import Backtester
 
 class TestsUnit:
     
@@ -57,9 +57,33 @@ class TestsUnit:
 
         self.regressor = Regressor(df_dict, 'DF', ['LAG_DF'])
 
+        estimation_data_list = ['DF']
+        backtest_data_list = ['DF']
+        window_size = 3
+        strategy_list = ['mean_strat']
+        objective_list = ['obj_sum']
+        transaction_cost_bool = True
+        transaction_cost_list = ['proportional_cost']
+        transaction_cost = 0.1
+
+        self.backtester = Backtester(df_dict, estimation_data_list, backtest_data_list, 
+                 window_size, strategy_list, objective_list, transaction_cost_bool, 
+                 transaction_cost_list, transaction_cost)
+
     def run(self):
         self.tests_unit_data_container()
         self.tests_unit_regressor()
+        self.test_backtester()
+
+    def test_backtester(self):
+        self.test_mean_strat()
+
+    def test_mean_strat(self):
+        test_array = np.array([1,2,3,4,1])
+        strat_value = self.backtester.mean_strat(test_array)
+        expected_value = 1.0
+        assert strat_value == expected_value
+        logging.info('test_mean_strat = Success!')
 
     def tests_unit_regressor(self):
 
