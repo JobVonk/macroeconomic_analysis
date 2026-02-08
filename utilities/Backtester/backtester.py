@@ -1,12 +1,13 @@
-from utilities.DataContainer.DataContainer import DataContainer
 import pandas as pd
 import numpy as np
+from utilities.CreatePlot.CreatePlot import CreatePlot
+from matplotlib.backends.backend_pdf import PdfPages
 
 
 class Backtester:
     def __init__(self, df_dict: dict, estimation_data_list: list[str], backtest_data_list: list[str], 
                  window_size: int, strategy_list: str, objective_list: list[str], transaction_cost_bool: bool, 
-                 transaction_cost_list: list, transaction_cost: float):
+                 transaction_cost_list: list, transaction_cost: float, output_path: str):
         self.df_dict = df_dict
         self.estimation_data_list = estimation_data_list
         self.backtest_data_list = backtest_data_list
@@ -17,11 +18,12 @@ class Backtester:
         self.objective_dict = {'obj_sum': self.obj_sum}
         self.objective_list = objective_list
 
-
         self.transaction_cost_bool = transaction_cost_bool
         self.transanction_cost_list = transaction_cost_list
         self.transaction_cost_dict = {'proportional_cost': self.proportional_transaction_cost}
         self.transaction_cost = transaction_cost 
+
+        self.output_path = output_path
 
 
     def run(self):
@@ -48,7 +50,26 @@ class Backtester:
 
         net_profit = trade_profit - cost
         net_cum_profits = cum_trade_profits - cum_cost
+        results_dict = {'net_cumulative_profits': net_cum_profits.reset_index(), 'cumulative_trade_profits': cum_trade_profits.reset_index(), 
+                          'cumulative_costs': cum_cost.reset_index()}
+        colors_dict = {'net_cumulative_profits': 'blue', 'cumulative_trade_profits': 'green', 'cumulative_costs': 'red'}
+        linestyle_dict = {'net_cumulative_profits': 'solid', 'cumulative_trade_profits': 'solid', 'cumulative_costs': 'solid'}
+        legend_dict = {'net_cumulative_profits': 'net_cumulative_profits', 'cumulative_trade_profits': 'cumulative_trade_profits', 
+                       'cumulative_costs': 'cumulative_costs'}
+
+
+        title = 'Cumulative results for ' + backtest_data + ' estimated on ' + estimation_data
+        self.create_plots(results_dict, title, colors_dict, linestyle_dict, legend_dict, 'value')
+
+    def create_plots(self, df_dict: dict, title: str, colors_dict: dict, linestyle_dict: dict, legend_dict: dict, y_label: str):
+        pdf = PdfPages(self.output_path + '../backtester/plots/' + title + '.pdf')
+        create_plot = CreatePlot(pdf, y_label)
+        max_value = max([max(df_dict[df].dropna().iloc[:,1]) for df in df_dict])
+        min_value = min([min(df_dict[df].dropna().iloc[:,1]) for df in df_dict])
         
+        create_plot.line_plot(df_dict, title, colors_dict, linestyle_dict, legend_dict, min_value, max_value + 1)
+        pdf.close()
+
     
     @staticmethod
     def obj_sum(strat_deltas: pd.DataFrame, backtest_df: pd.DataFrame) -> tuple[pd.DataFrame]:

@@ -68,7 +68,7 @@ class TestsUnit:
 
         self.backtester = Backtester(df_dict, estimation_data_list, backtest_data_list, 
                  window_size, strategy_list, objective_list, transaction_cost_bool, 
-                 transaction_cost_list, transaction_cost)
+                 transaction_cost_list, transaction_cost, '')
 
     def run(self):
         self.tests_unit_data_container()

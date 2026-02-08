@@ -13,7 +13,7 @@ class Config:
         self.lag = 0                       # specify a if data has to be lagged
         self.clean_bool = True             # If true data is cleaned from possible inf or nan values
         self.data_folder_path = "C:/Users/jjvon/Documents/visual code/macro_economic_analysis/data/"
-        self.output_path = self.data_folder_path + '../../results/macro_economic_anlaysis/'
+        self.output_path = self.data_folder_path + '../results/macro_economic_analysis/'
 
         self.ecb_fed_bool = False
         self.plot_type = 'line'
@@ -51,8 +51,8 @@ class Config:
         self.process_dict = {files[0]: [], files[1]: [],
                              files[2]: []}
 
-        self.ymin = -5
-        self.ymax = 25
+        self.y_min = -5.
+        self.y_max = 25.
         self.ylabel = 'percentage'
 
 
@@ -309,10 +309,10 @@ class Config:
         if not isinstance(self.process_dict, dict):
             raise Exception('process_dict in config is not of type dict.')
         
-        if not isinstance(self.ymin, int):
+        if not isinstance(self.y_min, float):
             raise Exception('ymin in config is not of type float.')
         
-        if not isinstance(self.ymax, int):
+        if not isinstance(self.y_max, float):
             raise Exception('ymax in config is not of type float.')
         
         if not isinstance(self.ylabel, str):
