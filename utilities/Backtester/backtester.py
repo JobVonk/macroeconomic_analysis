@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from utilities.CreatePlot.CreatePlot import CreatePlot
 from matplotlib.backends.backend_pdf import PdfPages
+from utilities.MonteCarlo.MonteCarlo import MonteCarlo
 
 
 class Backtester:
@@ -12,7 +13,7 @@ class Backtester:
         self.estimation_data_list = estimation_data_list
         self.backtest_data_list = backtest_data_list
         self.window_size = window_size
-        self.strategies_dict = {'mean_strat': self.mean_strat}
+        self.strategies_dict = {'mean_strat': self.mean_strat, 'monte_carlo_strat': self.monte_carlo_strat}
         self.strategy_list = strategy_list
 
         self.objective_dict = {'obj_sum': self.obj_sum}
@@ -31,7 +32,7 @@ class Backtester:
         estimation_data = self.estimation_data_list[0] 
         estimation_df = self.df_dict[estimation_data]
         estimation_df = estimation_df.set_index('DATE', inplace=False)
-    
+
         backtest_data = self.backtest_data_list[0]
         backtest_df = self.df_dict[backtest_data]
         backtest_df = backtest_df.set_index('DATE', inplace=False)
@@ -70,6 +71,11 @@ class Backtester:
         create_plot.line_plot(df_dict, title, colors_dict, linestyle_dict, legend_dict, min_value, max_value + 1)
         pdf.close()
 
+    @staticmethod
+    def monte_carlo_strat(window_values: np.array) -> float:
+        monte_carlo = MonteCarlo(window_values, mean_reversion_bool=True, n_sim=10, len_sim=20)
+        delta = monte_carlo.run()
+        return delta
     
     @staticmethod
     def obj_sum(strat_deltas: pd.DataFrame, backtest_df: pd.DataFrame) -> tuple[pd.DataFrame]:

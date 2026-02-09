@@ -24,7 +24,7 @@ class ProjectRunner:
         data_container = DataContainer(config)
         data_container.run()
         edited_df_dict = data_container.edited_df_dict
-
+        
         test = self.dict[self.test_name]
         test(config).run(edited_df_dict)
 

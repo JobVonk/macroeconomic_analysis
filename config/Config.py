@@ -23,7 +23,7 @@ class Config:
         self.window_size = 3
         self.estimation_data_list = ['CPIAUCSL_PC1', 'CPILFESL_PC1', 'UNRATE']
         self.backtest_data_list = ['CPIAUCSL_PC1', 'CPILFESL_PC1', 'UNRATE']
-        self.strategy_list = ['mean_strat']
+        self.strategy_list = ['monte_carlo_strat']
         self.objective_list = ['obj_sum']
         self.transaction_cost_bool = True
         self.transaction_cost_list = ['proportional_cost']    
@@ -248,7 +248,6 @@ class Config:
 
     def test_parameters(self):
 
-
         if not isinstance(self.start_date, pd.Timestamp):
             raise Exception('start_date in config is not of type pd.Timestamp.')
         
@@ -368,7 +367,7 @@ class Config:
                                 'to_first_of_month, lag_3, lag_6, lag_12, time_window')
 
         
-        correct_strategy_list = ['mean_strat']
+        correct_strategy_list = ['mean_strat', 'monte_carlo_strat']
         correct_objective_list = ['obj_sum']
         correct_transaction_cost_list = ['proportional_cost']
 
